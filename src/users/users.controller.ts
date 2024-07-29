@@ -1,6 +1,13 @@
 // src/users/users.controller.ts
 
-import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Get,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -18,7 +25,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('profile')
+  @Get('profile')
   getProfile(@Request() req) {
     return req.user;
   }

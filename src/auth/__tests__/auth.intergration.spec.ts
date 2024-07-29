@@ -23,6 +23,7 @@ describe('AuthController (e2e)', () => {
       .expect(200)
       .expect({
         access_token: expect.any(String),
+        success: true,
       });
   });
 
