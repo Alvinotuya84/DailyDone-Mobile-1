@@ -1,4 +1,3 @@
-// src/todos/todos.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -22,8 +21,18 @@ export class TodosService {
     return this.todoRepository.save(todo);
   }
 
-  async findAll(user: User): Promise<ToDo[]> {
-    return this.todoRepository.find({ where: { user } });
+  async findAll(
+    user: User,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ data: ToDo[]; total: number }> {
+    const [result, total] = await this.todoRepository.findAndCount({
+      where: { user },
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { id: 'DESC' }, // Optional: Sort by ID descending
+    });
+    return { data: result, total };
   }
 
   async update(id: number, completed: boolean): Promise<void> {

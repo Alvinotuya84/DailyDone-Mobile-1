@@ -1,4 +1,3 @@
-// src/todos/todos.controller.ts
 import {
   Controller,
   Get,
@@ -8,6 +7,7 @@ import {
   Param,
   Delete,
   Request,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
@@ -32,8 +32,8 @@ export class TodosController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Request() req) {
-    return this.todosService.findAll(req.user);
+  findAll(@Request() req, @Query('page') page = 1, @Query('limit') limit = 10) {
+    return this.todosService.findAll(req.user, +page, +limit);
   }
 
   @UseGuards(JwtAuthGuard)
