@@ -32,8 +32,26 @@ export class TodosController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Request() req, @Query('page') page = 1, @Query('limit') limit = 10) {
-    return this.todosService.findAll(req.user, +page, +limit);
+  async findAll(
+    @Request() req,
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+  ) {
+    const { data, total } = await this.todosService.findAll(
+      req.user,
+      +page,
+      +limit,
+    );
+    const totalPages = Math.ceil(total / +limit);
+    return {
+      data: data,
+      pagination: {
+        totalItems: total,
+        totalPages,
+        currentPage: +page,
+        pageSize: +limit,
+      },
+    };
   }
 
   @UseGuards(JwtAuthGuard)
