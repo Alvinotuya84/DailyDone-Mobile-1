@@ -45,11 +45,23 @@ export class TodosService {
     return todo;
   }
 
-  async update(id: number, completed: boolean): Promise<void> {
-    const result = await this.todoRepository.update(id, { completed });
-    if (result.affected === 0) {
+  async update(id: number, completed: boolean): Promise<ToDo> {
+    // Find the todo item to ensure it exists
+    const todo = await this.todoRepository.findOne({
+      where: { id },
+    });
+
+    if (!todo) {
       throw new NotFoundException(`ToDo with ID ${id} not found`);
     }
+
+    // Update the todo item with the new values
+    await this.todoRepository.update(id, { completed });
+
+    // Return the updated todo item (optional)
+    return this.todoRepository.findOne({
+      where: { id },
+    });
   }
 
   async delete(id: number): Promise<void> {
