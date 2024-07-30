@@ -18,8 +18,6 @@ export class TodosService {
       completed: false,
       user,
     });
-    const createdTodo = await this.todoRepository.save(todo);
-
     return this.todoRepository.save(todo);
   }
 
@@ -47,7 +45,10 @@ export class TodosService {
     return todo;
   }
 
-  async update(id: number, completed: boolean): Promise<ToDo> {
+  async update(
+    id: number,
+    completed: boolean,
+  ): Promise<{ success: boolean; message: string; data?: ToDo }> {
     const todo = await this.todoRepository.findOne({
       where: { id },
     });
@@ -58,15 +59,25 @@ export class TodosService {
 
     await this.todoRepository.update(id, { completed });
 
-    return this.todoRepository.findOne({
+    const updatedTodo = await this.todoRepository.findOne({
       where: { id },
     });
+
+    return {
+      success: true,
+      message: 'ToDo updated successfully',
+      data: updatedTodo,
+    };
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: number): Promise<{ success: boolean; message: string }> {
     const result = await this.todoRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`ToDo with ID ${id} not found`);
     }
+    return {
+      success: true,
+      message: 'ToDo deleted successfully',
+    };
   }
 }
