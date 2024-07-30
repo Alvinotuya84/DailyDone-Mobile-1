@@ -18,6 +18,8 @@ export class TodosService {
       completed: false,
       user,
     });
+    const createdTodo = await this.todoRepository.save(todo);
+
     return this.todoRepository.save(todo);
   }
 
@@ -46,7 +48,6 @@ export class TodosService {
   }
 
   async update(id: number, completed: boolean): Promise<ToDo> {
-    // Find the todo item to ensure it exists
     const todo = await this.todoRepository.findOne({
       where: { id },
     });
@@ -55,10 +56,8 @@ export class TodosService {
       throw new NotFoundException(`ToDo with ID ${id} not found`);
     }
 
-    // Update the todo item with the new values
     await this.todoRepository.update(id, { completed });
 
-    // Return the updated todo item (optional)
     return this.todoRepository.findOne({
       where: { id },
     });

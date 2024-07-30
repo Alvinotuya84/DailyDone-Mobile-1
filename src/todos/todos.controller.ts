@@ -19,15 +19,19 @@ export class TodosController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(
+  async create(
     @Request() req,
     @Body() createToDoDto: { title: string; description: string },
   ) {
-    return this.todosService.create(
+    const result = await this.todosService.create(
       req.user,
       createToDoDto.title,
       createToDoDto.description,
     );
+    return {
+      success: true,
+      data: result,
+    };
   }
 
   @UseGuards(JwtAuthGuard)
